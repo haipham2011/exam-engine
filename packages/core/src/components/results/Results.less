@@ -1,8 +1,32 @@
 .e-result-scorecount {
+  clear: right;
   margin-left: 1rem;
-  margin-bottom: 1rem;
-  min-width: 6rem;
+  margin-right: -11rem;
+  min-width: 10rem;
   padding-left: 1rem;
   border-left: 1px solid #aaa;
+  position: relative;
+}
+.e-exam .e-result-scorecount-sup {
+  position: absolute;
+  left: 0.25rem;
+  top: 0;
+  line-height: 1rem;
+}
+.e-results-section-wrapper {
+  padding-right: 8rem;
 }
 
+.e-result-scorecount-empty {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  height: 1ex;
+  width: 1.5ch;
+  border-bottom: 2px solid #333;
+}
+
+// If several questions are on same row, scores overlap next question. Hack to prevent it.
+table td .e-result-scorecount {
+  margin-right: 0;
+}

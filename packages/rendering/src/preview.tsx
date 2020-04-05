@@ -1,5 +1,8 @@
-import { Attachments, Exam, parseExam, RestrictedAudioPlaybackStats, Results } from '@digabi/exam-engine-core'
+import Attachments from '@digabi/exam-engine-core/dist/components/Attachments'
+import Exam from '@digabi/exam-engine-core/dist/components/Exam'
+import Results from '@digabi/exam-engine-core/dist/components/results/Results'
 import '@digabi/exam-engine-core/dist/main.css'
+import parseExam from '@digabi/exam-engine-core/dist/parser/parseExam'
 import { MasteringResult } from '@digabi/exam-engine-mastering'
 import Cookie from 'js-cookie'
 import React from 'react'
@@ -121,63 +124,54 @@ window.onload = async () => {
   const answers = await examServerApi.getAnswers()
 
   document.body.style.backgroundColor = backgroundColor()
-  
-  if (inResultsPage()) {
-    ReactDOM.render(
-      <Toolbar {...{ languages, selectedLanguage: language, hvp, hvpFilename, translation, translationFilename }}>
-        <Results
-          {...{
-            doc,
-            language,
-            attachmentsURL,
-            resolveAttachment,
-            answers,
-            gradingStructure,
-            scores: []
-          }}
-        />
-      </Toolbar>,
-      app
-    )
-  } else {
-    console.log(examUuid);
-    const Root = inAttachmentsPage() ? Attachments : Exam
-    const casCountdownDuration = Number(process.env.CAS_COUNTDOWN_DURATION_SECONDS) || undefined
-    const restrictedAudioPlaybackStats: RestrictedAudioPlaybackStats[] = []
 
-    const scrollKey = Root === Exam ? 'examScrollY' : 'attachmentsScrollY'
-    window.addEventListener('beforeunload', () => localStorage.setItem(scrollKey, window.scrollY.toString()))
+  const scrollKey = inResultsPage() ? 'resultsScrollY' : inAttachmentsPage() ? 'attachmentsScrollY' : 'examScrollY'
+  window.addEventListener('beforeunload', () => localStorage.setItem(scrollKey, window.scrollY.toString()))
 
-    document.body.style.backgroundColor = Root === Exam ? '#e0f4fe' : '#f0f0f0'
-
-    ReactDOM.render(
-      <Toolbar {...{ languages, selectedLanguage: language, hvp, hvpFilename, translation, translationFilename }}>
-        <Root
-          {...{
-            casCountdownDuration,
-            doc,
-            language,
-            attachmentsURL,
-            resolveAttachment,
-            answers,
-            casStatus: 'forbidden',
-            restrictedAudioPlaybackStats,
-            examServerApi
-          }}
-        />
-      </Toolbar>,
-      app,
-      () => {
-        const maybeScrollY = localStorage.getItem(scrollKey)
-        localStorage.removeItem(scrollKey)
-        if (maybeScrollY) {
-          requestAnimationFrame(() => {
-            window.scrollTo(0, Number(maybeScrollY))
-          }) // Delay scrolling a bit to wait for the layout to stabilize.
-        }
-      }
-    )
+  const commonProps = {
+    doc,
+    language,
+    attachmentsURL,
+    resolveAttachment,
+    answers
   }
+
+  const Root = inAttachmentsPage() ? Attachments : Exam
+  const content = inResultsPage() ? (
+    <Results
+      {...{
+        ...commonProps,
+        gradingStructure,
+        scores: []
+      }}
+    />
+  ) : (
+    <Root
+      {...{
+        ...commonProps,
+        casCountdownDuration: Number(process.env.CAS_COUNTDOWN_DURATION_SECONDS) || undefined,
+        casStatus: 'forbidden',
+        restrictedAudioPlaybackStats: [],
+        examServerApi
+      }}
+    />
+  )
+
+  ReactDOM.render(
+    <Toolbar {...{ languages, selectedLanguage: language, hvp, hvpFilename, translation, translationFilename }}>
+      {content}
+    </Toolbar>,
+    app,
+    () => {
+      const maybeScrollY = localStorage.getItem(scrollKey)
+      localStorage.removeItem(scrollKey)
+      if (maybeScrollY) {
+        requestAnimationFrame(() => {
+          window.scrollTo(0, Number(maybeScrollY))
+        }) // Delay scrolling a bit to wait for the layout to stabilize.
+      }
+    }
+  )
 }
 
 const backgroundColor = () => (inAttachmentsPage() ? '#f0f0f0' : '#e0f4fe')

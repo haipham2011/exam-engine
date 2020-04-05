@@ -2,23 +2,24 @@ import { ChoiceGroupChoice, ChoiceGroupQuestion, GradingStructure } from '@digab
 import * as _ from 'lodash-es'
 import React from 'react'
 import { findChildrenAnswers, getNumericAttribute, parentElements, queryAll } from '../../dom-utils'
-import { AnswerScore, ChoiceAnswer, ExamAnswer, QuestionId } from '../types'
+import { ChoiceAnswer, ExamAnswer, QuestionId, Score } from '../types'
 import { withContext } from '../withContext'
 import { ResultsProps } from './Results'
 
 export interface ResultsContext {
   answersByQuestionId: Record<QuestionId, ExamAnswer>
   gradingStructure: GradingStructure
-  scores: AnswerScore[]
+  scores: Score[]
   gradingText: string | undefined
   totalScore: number
+  singleGrading?: boolean
 }
 
 export const ResultsContext = React.createContext<ResultsContext>({} as ResultsContext)
 
 export const withResultsContext = withContext<ResultsContext, ResultsProps>(
   ResultsContext,
-  ({ scores, doc, gradingStructure, gradingText, answers }) => {
+  ({ scores, doc, gradingStructure, gradingText, answers, singleGrading }) => {
     const answersByQuestionId = _.keyBy(answers, 'questionId')
     const topLevelQuestions = queryAll(doc.documentElement, 'question', false)
     const totalScore = _.sum(
@@ -32,7 +33,8 @@ export const withResultsContext = withContext<ResultsContext, ResultsProps>(
       gradingStructure,
       scores,
       totalScore,
-      gradingText
+      gradingText,
+      singleGrading
     }
   }
 )
@@ -54,14 +56,14 @@ export function findMultiChoiceFromGradingStructure(
   return undefined
 }
 
-export function findScore(scores: AnswerScore[], questionId: number) {
-  return scores.find(s => s.questionId === questionId)
+export function findScore(scores: Score[], questionId: number): Score | undefined {
+  return scores.find(a => a.questionId === questionId)
 }
 
 export function calculateQuestionSumScore(
   questionElement: Element,
   gradingStructure: GradingStructure,
-  scores: AnswerScore[],
+  scores: Score[],
   answersById: Record<QuestionId, ExamAnswer>
 ) {
   const choiceQuestionScore = (questionId: number, scoredAnswer: ChoiceAnswer) => {
@@ -70,8 +72,8 @@ export function calculateQuestionSumScore(
   }
 
   const textQuestionScore = (questionId: number) => {
-    const score = findScore(scores, questionId)
-    return score ? score.scoreValue : 0
+    const score = findScore(scores, questionId)?.pregrading
+    return score ? score.score : 0
   }
 
   const sumScore = _.sum(

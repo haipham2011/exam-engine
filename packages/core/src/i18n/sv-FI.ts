@@ -3,6 +3,7 @@ import { Translations } from './fi-FI'
 // tslint:disable-next-line:variable-name
 export const sv_FI: Translations = {
   'exam-total': 'Provet sammanlagt',
+  'grading-total': 'Sammanlagt',
   material: 'Material',
   material_plural: 'Material',
   'attachments-page-title': 'material',
@@ -21,10 +22,13 @@ export const sv_FI: Translations = {
     'other-error': 'Uppspelning misslyckades, be övervakaren om hjälp.'
   },
   'audio-test': {
-    instructions:
-      'Provet omfattar uppgifter i hörförståelse. Det går inte att stoppa uppspelningen av uppgifterna och inte heller att lyssna på dem på nytt.',
+    instructions: 'Provet omfattar uppgifter i hörförståelse.',
     play: 'Testa hörbarheten',
     volume: 'Du kan justera ljudvolymen uppe i högra hörnet av rutan.'
+  },
+  grading: {
+    'pregrading-annotations': 'Preliminära bedömningens anteckningar',
+    'censor-annotations': 'Censorns anteckningar'
   },
   references: {
     heading: 'Källor',

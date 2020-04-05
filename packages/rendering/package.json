@@ -1,6 +1,6 @@
 {
   "name": "@digabi/exam-engine-rendering",
-  "version": "9.1.1",
+  "version": "10.1.7",
   "main": "./dist/index.js",
   "license": "EUPL-1.1",
   "files": [
@@ -8,13 +8,21 @@
     "public"
   ],
   "dependencies": {
-    "@digabi/exam-engine-core": "9.1.1",
-    "@digabi/exam-engine-mastering": "9.1.1",
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/runtime": "^7.8.7",
+    "@digabi/exam-engine-core": "10.1.7",
+    "@digabi/exam-engine-mastering": "10.1.7",
+    "babel-loader": "^8.0.6",
+    "child-process-promise": "^2.2.1",
     "css-loader": "^3.2.1",
     "dexie": "^2.0.4",
-    "file-loader": "^5.0.2",
+    "ffmpeg-static": "^4.0.1",
+    "file-loader": "^6.0.0",
     "html-inline-css-webpack-plugin": "^1.8.0",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^4.0.3",
     "js-cookie": "^2.2.1",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
@@ -27,7 +35,8 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "rich-text-editor": "^4.7.2",
-    "uuid": "^3.3.3",
+    "tmp-promise": "^2.0.2",
+    "uuid": "^7.0.2",
     "webpack": "^4.41.2",
     "webpack-dev-server": "3.8.0",
     "webpack-merge": "^4.2.2"
