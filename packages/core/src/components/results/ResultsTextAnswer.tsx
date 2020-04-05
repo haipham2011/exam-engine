@@ -12,7 +12,8 @@ function ResultsTextAnswer({ element, className }: ExamComponentProps) {
   const answer = answersByQuestionId[questionId] as TextAnswer | undefined
   const value = answer && answer.value
   const type = (element.getAttribute('type') || 'single-line') as 'rich-text' | 'multi-line' | 'single-line'
-
+  console.log("answersByQuestionId, scores: ",answersByQuestionId)
+  console.log("type: ", type);
   switch (type) {
     case 'rich-text':
     case 'multi-line': {
