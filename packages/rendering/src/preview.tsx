@@ -121,7 +121,7 @@ window.onload = async () => {
   const answers = await examServerApi.getAnswers()
 
   document.body.style.backgroundColor = backgroundColor()
-
+  
   if (inResultsPage()) {
     ReactDOM.render(
       <Toolbar {...{ languages, selectedLanguage: language, hvp, hvpFilename, translation, translationFilename }}>
@@ -140,6 +140,7 @@ window.onload = async () => {
       app
     )
   } else {
+    console.log(examUuid);
     const Root = inAttachmentsPage() ? Attachments : Exam
     const casCountdownDuration = Number(process.env.CAS_COUNTDOWN_DURATION_SECONDS) || undefined
     const restrictedAudioPlaybackStats: RestrictedAudioPlaybackStats[] = []
